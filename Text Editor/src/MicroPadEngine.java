@@ -1,6 +1,10 @@
 import javax.swing.*;
+import java.io.*;
 
 public class MicroPadEngine extends JFrame {
+
+    private JTextArea textArea = new JTextArea();
+    private File currentFile = null;
 
     public MicroPadEngine() {
 
@@ -10,11 +14,23 @@ public class MicroPadEngine extends JFrame {
         setLocationRelativeTo(null);
 
         JMenuBar menuBar = new JMenuBar();
-
         JMenu fileMenu = new JMenu("File");
         JMenu editMenu = new JMenu("Edit");
         JMenu viewMenu = new JMenu("View");
         JMenu helpMenu = new JMenu("Help");
+
+        JMenuItem newItem = new JMenuItem("New File");
+        JMenuItem openItem = new JMenuItem("Open File");
+        JMenuItem saveItem = new JMenuItem("Save");
+        JMenuItem saveAsItem = new JMenuItem("Save As");
+        JMenuItem exitItem = new JMenuItem("Exit");
+
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(saveAsItem);
+        fileMenu.addSeparator(); // বিভাজক লাইন
+        fileMenu.add(exitItem);
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
@@ -23,11 +39,51 @@ public class MicroPadEngine extends JFrame {
 
         setJMenuBar(menuBar);
 
-        JTextArea textArea = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        add(new JScrollPane(textArea));
 
-        add(scrollPane);
+
+        newItem.addActionListener(e -> {
+            textArea.setText("");
+            currentFile = null;
+        });
+
+        openItem.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                currentFile = fc.getSelectedFile();
+                try {
+                    textArea.read(new FileReader(currentFile), null);
+                } catch (Exception ex) {}
+            }
+        });
+
+        saveItem.addActionListener(e -> {
+            if (currentFile == null) {
+                JFileChooser fc = new JFileChooser();
+                if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    currentFile = fc.getSelectedFile();
+                }
+            }
+            if (currentFile != null) {
+                try {
+                    textArea.write(new FileWriter(currentFile));
+                } catch (Exception ex) {}
+            }
+        });
+
+        saveAsItem.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                currentFile = fc.getSelectedFile();
+                try {
+                    textArea.write(new FileWriter(currentFile));
+                } catch (Exception ex) {}
+            }
+        });
+
+        // Exit
+        exitItem.addActionListener(e -> System.exit(0));
 
         setVisible(true);
     }
-}
+}   
