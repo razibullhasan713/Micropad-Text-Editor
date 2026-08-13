@@ -29,7 +29,7 @@ public class MicroPadEngine extends JFrame {
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
         fileMenu.add(saveAsItem);
-        fileMenu.addSeparator(); // বিভাজক লাইন
+        fileMenu.addSeparator(); 
         fileMenu.add(exitItem);
 
         menuBar.add(fileMenu);
